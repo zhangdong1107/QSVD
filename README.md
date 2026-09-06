@@ -1,8 +1,8 @@
-# QSVD-AML-MATLAB
+# QSVD: Quaternion Singular Value Decomposition in MATLAB
 
 MATLAB code accompanying **A fast universal algorithm for quaternion singular value decomposition**, by Dong Zhang, Chuan Jiang, V. I. Vasil'ev, and Tongsong Jiang. *Applied Mathematics Letters*, 182 (2026), 110047.
 
-Paper: https://doi.org/10.1016/j.aml.2026.110047
+[Paper](https://doi.org/10.1016/j.aml.2026.110047) | [Algorithm project page](https://zhangdong1107.github.io/qsvd/) | [Download MATLAB package (ZIP)](https://zhangdong1107.github.io/downloads/qsvd-aml-matlab.zip)
 
 This package computes a quaternion singular value decomposition using ordinary complex MATLAB matrices. You do not need to install a quaternion class or a third-party toolbox.
 
@@ -12,7 +12,7 @@ Validated with MATLAB R2025a (25.1.0.2943329) on Windows. The package uses built
 
 ## Start here: run the example
 
-1. Extract `QSVD-AML-MATLAB.zip`.
+1. Download the ZIP using the link above and extract it.
 2. In MATLAB, set **Current Folder** to the extracted `QSVD-AML-MATLAB` folder, where the `.m` files are located.
 3. Enter the following commands in the Command Window:
 
