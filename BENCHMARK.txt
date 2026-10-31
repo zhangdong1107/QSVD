@@ -1,0 +1,111 @@
+QSVDS optimization benchmark, 2026-10-31
+MATLAB R2025a, i5-12500, 6 threads. Three repetitions, median seconds.
+Same known-spectrum matrices/seeds and k=1,5 as the preceding benchmark.
+Pure Krylov: no svds/eigs, restarted block spaces, thin QSVD extraction.
+Default QSVDS: MATLAB svds + quaternion pair recovery, thin QSVD refinement and actual residual/orthogonality checks.
+Raw svds: 2*k complex triplets, no structured factor recovery. Requested tol 1e-10.
+Default QSVDS internally requests tol/10, then checks final factors at tol=1e-10; the recovery cost IS timed.
+Old QSVDS timings are historical reference only (previous run, not this timing batch).
+Synthetic spectra: low_rank_dominant (8 large values + nonzero tail), power_decay (1/j^2), flat (1 down to .8).
+Matrix generation and external accuracy checks are excluded; all methods compute vectors.
+
+Quaternion size | family | k | full QSVD | pure Krylov | default QSVDS | raw svds | default flag OK | pure flag OK
+512x384 | low_rank_dominant | 1 | 0.323399 | 0.132461 | 0.110119 | 0.048336 | true | true
+512x384 | low_rank_dominant | 5 | 0.323399 | 0.156948 | 0.113411 | 0.031754 | true | true
+512x384 | power_decay | 1 | 0.262636 | 0.083073 | 0.070457 | 0.015609 | true | true
+512x384 | power_decay | 5 | 0.262636 | 0.133160 | 0.075657 | 0.019689 | true | true
+512x384 | flat | 1 | 0.288943 | 1.299663 | 0.276503 | 0.179629 | true | true
+512x384 | flat | 5 | 0.288943 | 1.641284 | 0.313607 | 0.298192 | true | true
+1024x768 | low_rank_dominant | 1 | 4.931839 | 0.365766 | 0.514832 | 0.200287 | true | true
+1024x768 | low_rank_dominant | 5 | 4.931839 | 0.370969 | 0.563425 | 0.320836 | true | true
+1024x768 | power_decay | 1 | 4.929914 | 0.365754 | 0.419178 | 0.264352 | true | true
+1024x768 | power_decay | 5 | 4.929914 | 0.640637 | 0.552820 | 0.313280 | true | true
+1024x768 | flat | 1 | 4.649064 | 6.957420 | 6.100370 | 4.846043 | true | true
+1024x768 | flat | 5 | 4.649064 | 8.517080 | 7.094682 | 6.491898 | true | true
+1536x1024 | low_rank_dominant | 1 | 13.694366 | 0.695659 | 0.767718 | 0.310868 | true | true
+1536x1024 | low_rank_dominant | 5 | 13.694366 | 0.774905 | 1.056890 | 0.560433 | true | true
+1536x1024 | power_decay | 1 | 11.911555 | 0.999167 | 0.848023 | 0.378069 | true | true
+1536x1024 | power_decay | 5 | 11.911555 | 1.253153 | 1.158357 | 0.499358 | true | true
+1536x1024 | flat | 1 | 15.119830 | 17.252399 | 13.554587 | 11.716636 | true | true
+1536x1024 | flat | 5 | 15.119830 | 22.942967 | 21.393349 | 18.879323 | true | true
+
+Worst errors across each triple of runs:
+size | family | k | method | value error | two-equation residual | orthogonality | actual backend | flags
+512x384 | low_rank_dominant | 1 | QSVD | 1.50729e-15 | 2.38908e-15 | 2.82617e-15 | QSVD | 0,0,0
+512x384 | low_rank_dominant | 1 | QSVDS_krylov | 5.02430e-16 | 3.65672e-15 | 2.68871e-15 | structured-krylov | 0,0,0
+512x384 | low_rank_dominant | 1 | QSVDS | 1.50729e-15 | 1.56484e-15 | 7.41784e-16 | matlab-svds | 0,0,0
+512x384 | low_rank_dominant | 1 | MATLAB_svds | 1.46482e-15 | 2.81399e-11 | 2.49898e-15 | MATLAB_svds | 0,0,0
+512x384 | low_rank_dominant | 5 | QSVD | 7.20952e-16 | 2.38908e-15 | 1.00853e-14 | QSVD | 0,0,0
+512x384 | low_rank_dominant | 5 | QSVDS_krylov | 4.51915e-16 | 2.32539e-15 | 7.20878e-15 | structured-krylov | 0,0,0
+512x384 | low_rank_dominant | 5 | QSVDS | 6.70560e-16 | 1.38329e-15 | 5.44503e-15 | matlab-svds | 0,0,0
+512x384 | low_rank_dominant | 5 | MATLAB_svds | 9.88369e-16 | 2.86559e-15 | 2.90582e-15 | MATLAB_svds | 0,0,0
+512x384 | power_decay | 1 | QSVD | 1.57009e-16 | 1.75234e-15 | 2.22055e-16 | QSVD | 0,0,0
+512x384 | power_decay | 1 | QSVDS_krylov | 6.28037e-16 | 6.22304e-13 | 8.49350e-16 | structured-krylov | 0,0,0
+512x384 | power_decay | 1 | QSVDS | 1.57009e-16 | 4.43219e-15 | 6.28317e-16 | matlab-svds | 0,0,0
+512x384 | power_decay | 1 | MATLAB_svds | 4.00297e-16 | 4.63397e-15 | 2.44792e-15 | MATLAB_svds | 0,0,0
+512x384 | power_decay | 5 | QSVD | 3.09475e-16 | 1.84066e-15 | 1.72211e-14 | QSVD | 0,0,0
+512x384 | power_decay | 5 | QSVDS_krylov | 6.53315e-16 | 4.48281e-15 | 6.34596e-15 | structured-krylov | 0,0,0
+512x384 | power_decay | 5 | QSVDS | 5.42679e-16 | 1.58647e-15 | 7.67710e-15 | matlab-svds | 0,0,0
+512x384 | power_decay | 5 | MATLAB_svds | 2.49342e-16 | 5.42918e-15 | 3.04644e-15 | MATLAB_svds | 0,0,0
+512x384 | flat | 1 | QSVD | 1.25607e-15 | 2.84388e-15 | 2.22046e-15 | QSVD | 0,0,0
+512x384 | flat | 1 | QSVDS_krylov | 6.84560e-14 | 8.60003e-11 | 1.35892e-13 | structured-krylov | 0,0,0
+512x384 | flat | 1 | QSVDS | 4.23925e-15 | 2.01325e-14 | 3.14091e-16 | matlab-svds | 0,0,0
+512x384 | flat | 1 | MATLAB_svds | 3.97516e-15 | 4.36929e-11 | 7.54953e-15 | MATLAB_svds | 0,0,0
+512x384 | flat | 5 | QSVD | 5.51228e-16 | 3.37191e-15 | 1.58649e-12 | QSVD | 0,0,0
+512x384 | flat | 5 | QSVDS_krylov | 1.57659e-13 | 6.08221e-11 | 4.96665e-12 | structured-krylov | 0,0,0
+512x384 | flat | 5 | QSVDS | 2.48513e-16 | 1.18171e-14 | 3.95259e-12 | matlab-svds | 0,0,0
+512x384 | flat | 5 | MATLAB_svds | 3.60746e-15 | 9.81742e-11 | 1.39874e-14 | MATLAB_svds | 0,0,0
+1024x768 | low_rank_dominant | 1 | QSVD | 1.25607e-15 | 1.95118e-15 | 1.41308e-15 | QSVD | 0,0,0
+1024x768 | low_rank_dominant | 1 | QSVDS_krylov | 2.51215e-16 | 2.55616e-15 | 3.15384e-15 | structured-krylov | 0,0,0
+1024x768 | low_rank_dominant | 1 | QSVDS | 2.26093e-15 | 4.05617e-15 | 4.71768e-16 | matlab-svds | 0,0,0
+1024x768 | low_rank_dominant | 1 | MATLAB_svds | 7.94411e-16 | 2.68455e-15 | 1.71699e-15 | MATLAB_svds | 0,0,0
+1024x768 | low_rank_dominant | 5 | QSVD | 1.46003e-15 | 3.51240e-15 | 1.17354e-14 | QSVD | 0,0,0
+1024x768 | low_rank_dominant | 5 | QSVDS_krylov | 6.30127e-16 | 3.55904e-15 | 1.23877e-14 | structured-krylov | 0,0,0
+1024x768 | low_rank_dominant | 5 | QSVDS | 6.18190e-16 | 1.78209e-15 | 5.79999e-15 | matlab-svds | 0,0,0
+1024x768 | low_rank_dominant | 5 | MATLAB_svds | 6.08904e-16 | 2.40790e-15 | 3.51322e-15 | MATLAB_svds | 0,0,0
+1024x768 | power_decay | 1 | QSVD | 6.28037e-16 | 3.01224e-15 | 2.20373e-15 | QSVD | 0,0,0
+1024x768 | power_decay | 1 | QSVDS_krylov | 6.28037e-16 | 9.96218e-13 | 6.49973e-16 | structured-krylov | 0,0,0
+1024x768 | power_decay | 1 | QSVDS | 6.28037e-16 | 1.72387e-15 | 9.42170e-16 | matlab-svds | 0,0,0
+1024x768 | power_decay | 1 | MATLAB_svds | 1.35520e-15 | 1.62722e-15 | 1.29892e-15 | MATLAB_svds | 0,0,0
+1024x768 | power_decay | 5 | QSVD | 6.05704e-16 | 8.76557e-15 | 2.34621e-14 | QSVD | 0,0,0
+1024x768 | power_decay | 5 | QSVDS_krylov | 2.20349e-15 | 4.34776e-15 | 1.95303e-14 | structured-krylov | 0,0,0
+1024x768 | power_decay | 5 | QSVDS | 4.35929e-16 | 4.77958e-15 | 1.03039e-14 | matlab-svds | 0,0,0
+1024x768 | power_decay | 5 | MATLAB_svds | 1.14100e-15 | 5.14638e-15 | 4.91166e-15 | MATLAB_svds | 0,0,0
+1024x768 | flat | 1 | QSVD | 9.42055e-16 | 1.50047e-15 | 2.51705e-15 | QSVD | 0,0,0
+1024x768 | flat | 1 | QSVDS_krylov | 2.33944e-14 | 8.55537e-11 | 4.56115e-14 | structured-krylov | 0,0,0
+1024x768 | flat | 1 | QSVDS | 6.28037e-16 | 5.76159e-14 | 1.25799e-15 | matlab-svds | 0,0,0
+1024x768 | flat | 1 | MATLAB_svds | 5.31286e-15 | 7.63995e-11 | 2.02666e-14 | MATLAB_svds | 0,0,0
+1024x768 | flat | 5 | QSVD | 8.70404e-16 | 4.81193e-15 | 1.70514e-12 | QSVD | 0,0,0
+1024x768 | flat | 5 | QSVDS_krylov | 1.43401e-13 | 8.57268e-11 | 2.04868e-11 | structured-krylov | 0,0,0
+1024x768 | flat | 5 | QSVDS | 1.06776e-15 | 1.57233e-14 | 1.34132e-11 | matlab-svds | 0,0,0
+1024x768 | flat | 5 | MATLAB_svds | 4.64084e-15 | 5.55586e-11 | 2.48852e-14 | MATLAB_svds | 0,0,0
+1536x1024 | low_rank_dominant | 1 | QSVD | 5.02430e-16 | 1.56875e-15 | 6.28037e-16 | QSVD | 0,0,0
+1536x1024 | low_rank_dominant | 1 | QSVDS_krylov | 5.02430e-16 | 2.91966e-15 | 1.43473e-15 | structured-krylov | 0,0,0
+1536x1024 | low_rank_dominant | 1 | QSVDS | 1.75850e-15 | 1.82542e-15 | 6.66952e-16 | matlab-svds | 0,0,0
+1536x1024 | low_rank_dominant | 1 | MATLAB_svds | 2.64074e-15 | 4.34093e-11 | 1.95170e-15 | MATLAB_svds | 0,0,0
+1536x1024 | low_rank_dominant | 5 | QSVD | 1.05424e-15 | 3.91731e-15 | 2.05447e-14 | QSVD | 0,0,0
+1536x1024 | low_rank_dominant | 5 | QSVDS_krylov | 6.40475e-16 | 3.56625e-15 | 1.17206e-14 | structured-krylov | 0,0,0
+1536x1024 | low_rank_dominant | 5 | QSVDS | 2.72953e-16 | 2.70977e-15 | 2.97377e-14 | matlab-svds | 0,0,0
+1536x1024 | low_rank_dominant | 5 | MATLAB_svds | 1.21330e-15 | 5.13941e-15 | 4.35483e-15 | MATLAB_svds | 0,0,0
+1536x1024 | power_decay | 1 | QSVD | 3.14018e-16 | 3.17183e-15 | 1.25607e-15 | QSVD | 0,0,0
+1536x1024 | power_decay | 1 | QSVDS_krylov | 3.14018e-16 | 1.10369e-12 | 3.92561e-15 | structured-krylov | 0,0,0
+1536x1024 | power_decay | 1 | QSVDS | 1.09906e-15 | 4.12194e-15 | 3.51167e-16 | matlab-svds | 0,0,0
+1536x1024 | power_decay | 1 | MATLAB_svds | 1.89715e-15 | 3.85270e-15 | 2.00617e-15 | MATLAB_svds | 0,0,0
+1536x1024 | power_decay | 5 | QSVD | 4.42877e-16 | 3.17183e-15 | 9.89103e-15 | QSVD | 0,0,0
+1536x1024 | power_decay | 5 | QSVDS_krylov | 1.71148e-15 | 6.25118e-15 | 2.20415e-14 | structured-krylov | 0,0,0
+1536x1024 | power_decay | 5 | QSVDS | 2.76626e-16 | 3.82405e-15 | 8.08386e-15 | matlab-svds | 0,0,0
+1536x1024 | power_decay | 5 | MATLAB_svds | 1.41639e-15 | 3.75532e-15 | 3.96944e-15 | MATLAB_svds | 0,0,0
+1536x1024 | flat | 1 | QSVD | 3.14018e-16 | 1.94564e-15 | 3.29737e-15 | QSVD | 0,0,0
+1536x1024 | flat | 1 | QSVDS_krylov | 4.45278e-13 | 8.57473e-11 | 8.89771e-13 | structured-krylov | 0,0,0
+1536x1024 | flat | 1 | QSVDS | 1.57009e-15 | 5.62982e-14 | 7.85952e-16 | matlab-svds | 0,0,0
+1536x1024 | flat | 1 | MATLAB_svds | 1.10828e-14 | 6.10355e-11 | 2.86245e-14 | MATLAB_svds | 0,0,0
+1536x1024 | flat | 5 | QSVD | 4.84124e-16 | 4.16975e-15 | 2.62897e-12 | QSVD | 0,0,0
+1536x1024 | flat | 5 | QSVDS_krylov | 2.92445e-13 | 9.83406e-11 | 2.89497e-11 | structured-krylov | 0,0,0
+1536x1024 | flat | 5 | QSVDS | 5.66326e-16 | 1.27622e-14 | 1.04548e-12 | matlab-svds | 0,0,0
+1536x1024 | flat | 5 | MATLAB_svds | 7.15155e-15 | 3.03233e-11 | 3.05781e-14 | MATLAB_svds | 0,0,0
+
+No universal acceleration or all-matrix convergence guarantee is implied. Inspect returned status and residuals.
+
+Verification: demo; 8 full-QSVD cases; 35 compatibility cases; 15 structured spectrum cases; 30 native + 30 pure independent real-reference cases; 96 backend cases; and injected native-error/bad-factor fallback checks all passed in MATLAB R2025a.
+Final hardening also completes right zero modes and checks native orthogonality before accepting/falling back. These additions leave the full-rank benchmark arithmetic unchanged; replay measurements on your own machine.
+The default backend is now SVDS, with explicit quaternion factor recovery. Select backend='krylov' for the self-contained implementation.

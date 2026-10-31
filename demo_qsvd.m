@@ -26,4 +26,14 @@ disp(singular_values);
 assert(max([relative_error,u_error,v_error]) < 1e-10, ...
     'Demo validation failed. Check the input representation and MATLAB path.');
 fprintf('Demo passed.\n');
+% Values only: K counts quaternion singular values (no complex duplicates).
+sigma_max = QSVDS(AC,m,n,1);          % Iterative largest value.
+top_values = QSVDS(AC,m,n,2);         % All values for this two-column demo.
+top_via_main = qsvd_complex(AC,m,n,[],1);
+[U1,E1,V1,info] = QSVDS(AC,m,n,1);    % Iterative largest triplet.
+fprintf('Largest singular value: %.12g\n',sigma_max);
+disp(top_values);
+assert(info.flag == 0);
+assert(abs(sigma_max-top_via_main) < 1e-10*max(1,sigma_max));
+assert(norm(AC*V1-U1*E1,'fro') < 1e-10*max(1,norm(AC,'fro')));
 end

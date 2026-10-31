@@ -1,8 +1,16 @@
-function [UC, EC, VC] = qsvd_complex(AC, m, n, tol)
+function [UC, EC, VC] = qsvd_complex(AC, m, n, tol, k)
 %QSVD_COMPLEX Quaternion SVD through its complex representation.
 %   [UC, EC, VC] = QSVD_COMPLEX(AC, M, N) uses TOL = 1e-12.
 %   [UC, EC, VC] = QSVD_COMPLEX(AC, M, N, TOL) sets the relative
 %   singular-value clustering tolerance (applied after scaling AC).
+%   S = QSVD_COMPLEX(AC,M,N,[],K) returns only the largest K singular values.
+%   [UC,EC,VC] = QSVD_COMPLEX(AC,M,N,TOL,K) returns rank-K factors.
+%   K is a quaternion count, not the doubled complex dimension.
+%   Calls with K delegate to QSVDS (default MATLAB SVDS backend).
+%   The original full algorithm below is used for calls without K.
+%   For K < min(M,N),
+%   UC*EC*VC' is a rank-K approximation, not an exact reconstruction.
+%   Without K, all original output conventions (including one output) remain.
 %
 %   AC = [B1, B2; -conj(B2), conj(B1)] is a 2*M-by-2*N complex matrix.
 %   Construct AC with QUATERNION_TO_COMPLEX(B1, B2).
@@ -24,6 +32,19 @@ function [UC, EC, VC] = qsvd_complex(AC, m, n, tol)
 
     if nargin < 4 || isempty(tol)
         tol = 1e-12;
+    end
+    validateattributes(tol, {'numeric'}, {'real','scalar','finite','positive'}, mfilename, 'tol');
+    truncated = nargin >= 5 && ~isempty(k);
+    if truncated
+        qsvd_validate_inputs(AC,m,n,k);
+        if nargout <= 1
+            UC = QSVDS(AC,m,n,k,struct('cluster_tol',tol));
+        else
+            [UC,EC,VC] = QSVDS(AC,m,n,k,struct('cluster_tol',tol));
+        end
+        return;
+    else
+        qsvd_validate_inputs(AC,m,n);
     end
 
     % Scale to improve numerical stability
