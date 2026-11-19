@@ -1,6 +1,10 @@
-# QSVD / QSVDS: Quaternion Singular Value Decomposition in MATLAB
+# QSVD / QSVDS: Quaternion Singular Value Decomposition in MATLAB and Python
 
 [Algorithm project page](https://zhangdong1107.github.io/qsvd/) · [Download the MATLAB package](https://zhangdong1107.github.io/downloads/qsvd-aml-matlab.zip?v=20261031)
+
+The [Python implementation](python/README.md) provides full QSVD and leading-k QSVDS with NumPy. [Download the Python ZIP](https://zhangdong1107.github.io/downloads/qsvd-python.zip).
+
+## MATLAB
 
 MATLAB code accompanying **A fast universal algorithm for quaternion singular value decomposition**, by Dong Zhang, Chuan Jiang, V. I. Vasil'ev, and Tongsong Jiang. *Applied Mathematics Letters*, 182 (2026), 110047.
 
